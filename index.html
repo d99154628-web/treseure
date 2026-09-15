@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>저주받은 보물섬의 비밀 - 초등 영어 방탈출</title>
+    <style>
+        :root {
+            --bg-color: #0c0814;
+            --card-bg: rgba(23, 16, 38, 0.95);
+            --accent-purple: #9d4edd;
+            --accent-green: #52b788;
+            --accent-red: #e63946;
+            --accent-gold: #ffb703;
+            --text-light: #f8f9fa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(157, 78, 221, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(82, 183, 136, 0.1) 0%, transparent 40%);
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 820px;
+            background: var(--card-bg);
+            border: 2px solid var(--accent-purple);
+            border-radius: 20px;
+            box-shadow: 0 0 35px rgba(157, 78, 221, 0.35);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 15px;
+        }
+
+        .title {
+            font-size: 1.8rem;
+            color: var(--accent-gold);
+            text-shadow: 0 0 10px rgba(255, 183, 3, 0.5);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 0.95rem;
+            color: #b8c0c8;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #2b1e4a;
+            border-radius: 6px;
+            margin: 15px 0;
+            overflow: hidden;
+            border: 1px solid var(--accent-purple);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-green));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .stage-badge {
+            display: inline-block;
+            background: var(--accent-purple);
+            color: white;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .scene-container {
+            width: 100%;
+            height: 260px;
+            background: #110b21;
+            border-radius: 12px;
+            border: 1.5px solid rgba(157, 78, 221, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .scene-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .story-box {
+            background: rgba(0, 0, 0, 0.45);
+            border-left: 4px solid var(--accent-gold);
+            padding: 14px 18px;
+            border-radius: 4px;
+            margin-bottom: 18px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .question-title {
+            font-size: 1.25rem;
+            color: #ffffff;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .question-desc {
+            font-size: 0.95rem;
+            color: #a0aec0;
+            margin-bottom: 18px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .btn-option {
+            background: rgba(43, 30, 74, 0.85);
+            border: 1.5px solid var(--accent-purple);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 0.98rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-option:hover {
+            background: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(157, 78, 221, 0.4);
+        }
+
+        .hint-box {
+            background: rgba(255, 183, 3, 0.12);
+            border: 1px dashed var(--accent-gold);
+            padding: 12px;
+            border-radius: 8px;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+            margin-bottom: 18px;
+            display: none;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-hint {
+            background: transparent;
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-hint:hover {
+            background: rgba(255, 183, 3, 0.2);
+        }
+
+        .feedback {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-top: 12px;
+            height: 28px;
+        }
+
+        .feedback.correct { color: var(--accent-green); }
+        .feedback.wrong { color: var(--accent-red); }
+
+        .screen-center {
+            text-align: center;
+            padding: 15px 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-purple), #7b2cbf);
+            color: white;
+            border: none;
+            padding: 15px 36px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.5);
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(157, 78, 221, 0.8);
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <!-- 인트로 화면 -->
+    <div id="intro-screen" class="screen-center">
+        <h1 class="title">☠️ 저주받은 보물섬의 비밀</h1>
+        <p class="subtitle" style="margin-top: 8px;">12개의 해골 봉인을 풀고 보물상자를 찾아 탈출하세요!</p>
+        
+        <div class="scene-container" style="margin: 20px 0;">
+            <svg viewBox="0 0 500 260">
+                <rect width="500" height="260" fill="#0b0716"/>
+                <!-- 배경 및 보름달 -->
+                <circle cx="250" cy="90" r="60" fill="#e2e8f0" opacity="0.9"/>
+                <circle cx="250" cy="90" r="75" fill="#9d4edd" opacity="0.25"/>
+                <!-- 구름 및 파도 -->
+                <path d="M 0,200 Q 125,170 250,200 T 500,200 L 500,260 L 0,260 Z" fill="#171026"/>
+                <path d="M 0,220 Q 125,200 250,220 T 500,220 L 500,260 L 0,260 Z" fill="#2d1e47"/>
+                <!-- 유령 보물선 -->
+                <path d="M 190,195 L 310,195 L 290,225 L 210,225 Z" fill="#3c244d"/>
+                <line x1="250" y1="120" x2="250" y2="195" stroke="#7b2cbf" stroke-width="4"/>
+                <path d="M 250,130 Q 280,150 250,175 Q 220,150 250,130 Z" fill="#9d4edd" opacity="0.7"/>
+                <text x="250" y="100" fill="#ffb703" font-size="36" text-anchor="middle">🏴‍☠️</text>
+            </svg>
+        </div>
+
+        <p style="color: #cbd5e0; line-height: 1.6; font-size: 0.98rem;">
+            초등 영어 3~6학년 교육과정 복습 퀴즈 게임입니다.<br>
+            각 문장을 완성하고 결계를 하나씩 해제하세요!
+        </p>
+
+        <button class="btn-primary" onclick="startGame()">탈출 시작하기 🗝️</button>
+    </div>
+
+    <!-- 게임 화면 -->
+    <div id="game-screen" class="hidden">
+        <div class="header">
+            <span class="stage-badge" id="stage-badge">관문 1 / 12</span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <div class="scene-container" id="scene-box"></div>
+
+        <div class="story-box" id="story-text"></div>
+
+        <div class="question-title" id="question-text"></div>
+
+        <div class="question-desc" id="question-desc"></div>
+
+        <div class="options-grid" id="options-container"></div>
+
+        <div class="hint-box" id="hint-box"></div>
+
+        <div class="controls">
+            <button class="btn-hint" onclick="toggleHint()">💡 힌트 보기</button>
+            <span style="font-size: 0.85rem; color: #a0aec0;">저주받은 보물섬 탈출</span>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <!-- 성공 엔딩 화면 -->
+    <div id="ending-screen" class="screen-center hidden">
+        <h1 class="title" style="color: var(--accent-green);">🎉 무사히 탈출했습니다!</h1>
+        <p class="subtitle" style="margin: 12px 0;">12개의 모든 해골 결계를 해제하고 보물을 손에 넣었습니다!</p>
+        
+        <div class="scene-container" style="margin: 20px 0;">
+            <svg viewBox="0 0 500 260">
+                <rect width="500" height="260" fill="#0a1912"/>
+                <circle cx="250" cy="130" r="90" fill="#52b788" opacity="0.2"/>
+                <text x="250" y="130" fill="#ffb703" font-size="75" text-anchor="middle">👑💎🎁</text>
+                <text x="250" y="200" fill="#ffffff" font-size="22" font-weight="bold" text-anchor="middle">CONGRATULATIONS!</text>
+            </svg>
+        </div>
+
+        <p style="color: #e2e8f0; font-size: 1.05rem; line-height: 1.6;">
+            훌륭합니다! 영어 실력으로 보물섬의 저주를 완벽히 풀어냈습니다!
+        </p>
+
+        <button class="btn-primary" onclick="location.reload()">다시 도전하기 🔄</button>
+    </div>
+</div>
+
+<script>
+    const quizData = [
+        {
+            stage: 1,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#150d24"/><circle cx="250" cy="100" r="55" fill="#321e56"/><text x="250" y="115" fill="#fff" font-size="50" text-anchor="middle">🧟‍♂️</text><rect x="220" y="165" width="60" height="35" rx="6" fill="#e63946"/><text x="250" y="189" fill="#fff" font-size="20" font-weight="bold" text-anchor="middle">6th</text></svg>`,
+            story: "🧙‍♂️ 문지기 유령 소년이 막아서며 묻습니다: '내 가슴의 숫자가 보이는가? 나는 몇 학년일까?'",
+            question: "What grade are you in?",
+            desc: "질문: 너는 몇 학년이니? (유령 옷 표식: 6th)",
+            options: [
+                { text: "I'm in the fifth grade.", correct: false },
+                { text: "I'm in the sixth grade.", correct: true },
+                { text: "I'm in the fourth grade.", correct: false },
+                { text: "I'm in the third grade.", correct: false }
+            ],
+            hint: "유령의 옷에 '6th'라고 적혀 있어요. 6학년은 sixth 입니다!"
+        },
+        {
+            stage: 2,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#0f1124"/><text x="250" y="115" fill="#fff" font-size="65" text-anchor="middle">👻📖</text><rect x="225" y="165" width="50" height="28" rx="5" fill="#52b788"/><text x="250" y="184" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">5th</text></svg>`,
+            story: "👻 유령 도서관의 책이 펼쳐지며 말합니다. '나는 5학년이고 매일 책을 읽어! 문장을 맞춰봐!'",
+            question: "I'm in the ( 1 ) grade. I ( 2 ) every day.",
+            desc: "그림 힌트: 5th 표식 / 책 읽는 그림",
+            options: [
+                { text: "fifth / read books", correct: true },
+                { text: "fourth / play the guitar", correct: false },
+                { text: "fifth / play the guitar", correct: false },
+                { text: "sixth / read books", correct: false }
+            ],
+            hint: "5학년은 fifth, 책을 읽는 것은 read books 입니다."
+        },
+        {
+            stage: 3,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#081524"/><path d="M0,170 Q125,140 250,170 T500,170 L500,260 L0,260 Z" fill="#1d3557"/><text x="250" y="125" fill="#fff" font-size="55" text-anchor="middle">🏊‍♂️💀</text></svg>`,
+            story: "🌊 바다속 해골이 튜브를 타고 수영하며 묻습니다. '내가 수영을 즐기는 이 더운 계절은 언제인가?'",
+            question: "What season do you like?",
+            desc: "질문: 너는 무슨 계절을 좋아하니? (그림: 수영하는 모습)",
+            options: [
+                { text: "I like winter.", correct: false },
+                { text: "I like spring.", correct: false },
+                { text: "I like summer.", correct: true },
+                { text: "I like fall.", correct: false }
+            ],
+            hint: "수영을 즐기는 계절은 여름(summer)입니다."
+        },
+        {
+            stage: 4,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#290a0c"/><text x="180" y="125" fill="#fff" font-size="55" text-anchor="middle">🍁</text><text x="320" y="115" fill="#fff" font-size="65" text-anchor="middle">🍁</text></svg>`,
+            story: "🍂 붉은 단풍나무 숲입니다. 알맞은 단어를 선택해 결계를 풀어보세요.",
+            question: "I like ( 1 ). I can see ( 2 ).",
+            desc: "그림: 붉게 물든 단풍나무 숲",
+            options: [
+                { text: "fall / colorful trees", correct: true },
+                { text: "spring / beautiful flowers", correct: false },
+                { text: "fall / beautiful flowers", correct: false },
+                { text: "winter / colorful trees", correct: false }
+            ],
+            hint: "가을은 fall, 알록달록한 나무는 colorful trees 입니다."
+        },
+        {
+            stage: 5,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#161226"/><rect x="185" y="55" width="130" height="140" rx="10" fill="#fff"/><rect x="185" y="55" width="130" height="40" rx="10" fill="#e63946"/><text x="250" y="82" fill="#fff" font-size="18" font-weight="bold" text-anchor="middle">JULY</text><text x="250" y="155" fill="#111" font-size="50" font-weight="bold" text-anchor="middle">7</text></svg>`,
+            story: "🪦 저주의 묘비에 달력이 새겨져 있습니다. 저주의 생일을 맞춰라!",
+            question: "When is your birthday?",
+            desc: "질문: 너의 생일은 언제니? (달력 힌트: 7월 7일)",
+            options: [
+                { text: "It's on July 7th.", correct: true },
+                { text: "It's on June 7th.", correct: false },
+                { text: "It's on July 6th.", correct: false },
+                { text: "It's on August 7th.", correct: false }
+            ],
+            hint: "7월은 July, 7일은 7th 입니다."
+        },
+        {
+            stage: 6,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#0c1d14"/><circle cx="250" cy="115" r="50" fill="#2a9d8f"/><text x="250" y="130" fill="#fff" font-size="40" text-anchor="middle">🌍</text><text x="250" y="200" fill="#ffb703" font-size="18" font-weight="bold" text-anchor="middle">지구의 날 (4월 22일)</text></svg>`,
+            story: "🌏 멸망하는 지구 포스터가 빛납니다. '지구의 날(Earth Day)'의 날짜를 맞춰라!",
+            question: "A: When is ( 1 )?  B: It's on ( 2 ) 22nd.",
+            desc: "포스터 힌트: 지구의 날 / 4월 22일",
+            options: [
+                { text: "Earth Day / April", correct: true },
+                { text: "World Water Day / April", correct: false },
+                { text: "Earth Day / May", correct: false },
+                { text: "World Water Day / May", correct: false }
+            ],
+            hint: "지구의 날은 Earth Day, 4월은 April 입니다."
+        },
+        {
+            stage: 7,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#1b1228"/><text x="250" y="130" fill="#fff" font-size="75" text-anchor="middle">🥋💀</text></svg>`,
+            story: "🥋 태권도복을 입은 해골 소년이 웃으며 묻습니다. '너는 왜 웃고 있느냐?'",
+            question: "Why are you happy?",
+            desc: "질문: 너는 왜 기쁘니? (태권도 연습 힌트)",
+            options: [
+                { text: "Because I can do Taekwondo.", correct: true },
+                { text: "Because I am hungry.", correct: false },
+                { text: "Because my dog is sick.", correct: false },
+                { text: "Because it is raining.", correct: false }
+            ],
+            hint: "이유는 'Because~'로 시작합니다. 태권도를 할 수 있어서 기쁜 문장을 찾으세요."
+        },
+        {
+            stage: 8,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#131924"/><text x="200" y="130" fill="#fff" font-size="55" text-anchor="middle">👧💧</text><text x="300" y="130" fill="#fff" font-size="55" text-anchor="middle">🐶🩹</text></svg>`,
+            story: "🐶 불쌍한 아픈 강아지를 안고 있는 소녀 유령의 대화를 완성하세요.",
+            question: "A: Why are you ( 1 )?  B: Because my dog is ( 2 ).",
+            desc: "힌트: 슬픈 표정 / 넥카라를 한 아픈 강아지",
+            options: [
+                { text: "sad / sick", correct: true },
+                { text: "happy / good", correct: false },
+                { text: "angry / big", correct: false },
+                { text: "sad / fast", correct: false }
+            ],
+            hint: "슬픈 것은 sad, 아픈 것은 sick 입니다."
+        },
+        {
+            stage: 9,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#101622"/><rect x="200" y="70" width="100" height="120" fill="#3d5a80" rx="8"/><text x="250" y="140" fill="#fff" font-size="45" text-anchor="middle">🚌🪧</text></svg>`,
+            story: "🏣 유령 정류장 앞에 선 문지기가 정류장의 위치를 물어봅니다.",
+            question: "Where is the bus stop?",
+            desc: "질문: 버스 정류장은 어디에 있나요?",
+            options: [
+                { text: "It's next to the hospital.", correct: true },
+                { text: "It's inside the school.", correct: false },
+                { text: "It's under the sea.", correct: false },
+                { text: "It's on the mountain.", correct: false }
+            ],
+            hint: "~옆에 있다는 표현은 'next to'를 사용합니다."
+        },
+        {
+            stage: 10,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#1a1426"/><text x="250" y="130" fill="#fff" font-size="60" text-anchor="middle">🏦 🗺️ 🏛️</text></svg>`,
+            story: "🧭 미로 같은 저주받은 길에서 은행(Bank)의 올바른 탈출 경로를 말해보세요.",
+            question: "A: Where is the bank?  B: Go straight one block and turn ( 1 ) at the restaurant. It's ( 2 ) the library.",
+            desc: "길 안내: 식당에서 좌회전(left) 후 도서관 옆(next to) 위치",
+            options: [
+                { text: "left / next to", correct: true },
+                { text: "right / under", correct: false },
+                { text: "left / behind", correct: false },
+                { text: "right / inside", correct: false }
+            ],
+            hint: "왼쪽 회전은 turn left, 옆은 next to 입니다."
+        },
+        {
+            stage: 11,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#181126"/><circle cx="250" cy="110" r="50" fill="#4a3e65"/><text x="250" y="125" fill="#fff" font-size="50" text-anchor="middle">👨🏻‍🦱🥸</text></svg>`,
+            story: "🧔 콧수염 해적이 막아서며 묻습니다. '보물상자를 지키는 저 자의 모습을 설명하라!'",
+            question: "What does he look like?",
+            desc: "질문: 그는 어떻게 생겼나요? (그림: 콧수염 남자)",
+            options: [
+                { text: "He has a mustache.", correct: true },
+                { text: "He has long red hair.", correct: false },
+                { text: "He is wearing a dress.", correct: false },
+                { text: "He has blue wings.", correct: false }
+            ],
+            hint: "콧수염을 가지고 있다는 표현은 'has a mustache' 입니다."
+        },
+        {
+            stage: 12,
+            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#0d211a"/><circle cx="250" cy="110" r="50" fill="#2d6a4f"/><text x="250" y="125" fill="#fff" font-size="50" text-anchor="middle">🧙‍♀️👓</text></svg>`,
+            story: "🔮 보물상자 앞 마지막 마녀의 봉인 문장을 완성하세요!",
+            question: "She has ( 1 ) eyes and short black ( 2 ). She is wearing ( 3 ).",
+            desc: "힌트: 초록색(green) 눈 / 검은 머리카락(hair) / 안경(glasses) 착용",
+            options: [
+                { text: "green / hair / glasses", correct: true },
+                { text: "blue / hat / shoes", correct: false },
+                { text: "red / hair / ring", correct: false },
+                { text: "green / shoes / glasses", correct: false }
+            ],
+            hint: "초록 눈(green), 머리(hair), 안경(glasses) 순서입니다."
+        }
+    ];
+
+    let currentStage = 0;
+
+    function startGame() {
+        document.getElementById('intro-screen').classList.add('hidden');
+        document.getElementById('game-screen').classList.remove('hidden');
+        loadStage(0);
+    }
+
+    function loadStage(index) {
+        currentStage = index;
+        const data = quizData[index];
+
+        document.getElementById('stage-badge').innerText = `관문 ${data.stage} / 12`;
+        document.getElementById('progress-fill').style.width = `${(data.stage / 12) * 100}%`;
+        document.getElementById('scene-box').innerHTML = data.svg;
+        document.getElementById('story-text').innerText = data.story;
+        document.getElementById('question-text').innerText = data.question;
+        document.getElementById('question-desc').innerText = data.desc;
+        document.getElementById('hint-box').innerText = `💡 힌트: ${data.hint}`;
+        document.getElementById('hint-box').style.display = 'none';
+        document.getElementById('feedback').innerText = '';
+
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+
+        data.options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-option';
+            btn.innerText = opt.text;
+            btn.onclick = () => checkAnswer(opt.correct);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(isCorrect) {
+        const feedback = document.getElementById('feedback');
+        if (isCorrect) {
+            feedback.className = 'feedback correct';
+            feedback.innerText = '✨ 정답입니다! 결계가 하나 해제됩니다...';
+            setTimeout(() => {
+                if (currentStage + 1 < quizData.length) {
+                    loadStage(currentStage + 1);
+                } else {
+                    showEnding();
+                }
+            }, 1000);
+        } else {
+            feedback.className = 'feedback wrong';
+            feedback.innerText = '☠️ 틀렸습니다! 다시 시도해 보세요.';
+        }
+    }
+
+    function toggleHint() {
+        const hintBox = document.getElementById('hint-box');
+        hintBox.style.display = hintBox.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function showEnding() {
+        document.getElementById('game-screen').classList.add('hidden');
+        document.getElementById('ending-screen').classList.remove('hidden');
+    }
+</script>
+
+</body>
+</html>
