@@ -6,7 +6,7 @@
     <title>저주받은 보물섬의 비밀 - 초등 영어 방탈출</title>
     <style>
         :root {
-            --bg-color: #0c0814;
+            --bg-color: #0b0714;
             --card-bg: rgba(23, 16, 38, 0.95);
             --accent-purple: #9d4edd;
             --accent-green: #52b788;
@@ -95,25 +95,27 @@
 
         .scene-container {
             width: 100%;
-            height: 260px;
-            background: #110b21;
+            height: 300px;
+            background: #000;
             border-radius: 12px;
-            border: 1.5px solid rgba(157, 78, 221, 0.4);
+            border: 2px solid rgba(157, 78, 221, 0.5);
             display: flex;
             justify-content: center;
             align-items: center;
             margin-bottom: 20px;
             overflow: hidden;
             position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
-        .scene-container svg {
+        .scene-container img {
             width: 100%;
             height: 100%;
+            object-fit: cover;
         }
 
         .story-box {
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(0, 0, 0, 0.55);
             border-left: 4px solid var(--accent-gold);
             padding: 14px 18px;
             border-radius: 4px;
@@ -247,17 +249,7 @@
         <p class="subtitle" style="margin-top: 8px;">12개의 해골 봉인을 풀고 보물상자를 찾아 탈출하세요!</p>
         
         <div class="scene-container" style="margin: 20px 0;">
-            <svg viewBox="0 0 500 260">
-                <rect width="500" height="260" fill="#0b0716"/>
-                <circle cx="250" cy="80" r="50" fill="#e2e8f0" opacity="0.9"/>
-                <circle cx="250" cy="80" r="65" fill="#9d4edd" opacity="0.2"/>
-                <path d="M 0,180 Q 125,150 250,180 T 500,180 L 500,260 L 0,260 Z" fill="#171026"/>
-                <path d="M 0,200 Q 125,180 250,200 T 500,200 L 500,260 L 0,260 Z" fill="#2d1e47"/>
-                <path d="M 190,185 L 310,185 L 290,215 L 210,215 Z" fill="#3c244d"/>
-                <line x1="250" y1="110" x2="250" y2="185" stroke="#7b2cbf" stroke-width="4"/>
-                <path d="M 250,120 Q 280,140 250,165 Q 220,140 250,120 Z" fill="#9d4edd" opacity="0.7"/>
-                <text x="250" y="90" fill="#ffb703" font-size="32" text-anchor="middle">🏴‍☠️</text>
-            </svg>
+            <img src="https://lh3.googleusercontent.com/gg/AOc1b402R0Y9P9yC0PZ5Z7X-8Q8J4R8_3N5Y_9Q8K7L" alt="보물섬 지도" id="intro-img">
         </div>
 
         <p style="color: #cbd5e0; line-height: 1.6; font-size: 0.98rem;">
@@ -277,7 +269,9 @@
             </div>
         </div>
 
-        <div class="scene-container" id="scene-box"></div>
+        <div class="scene-container">
+            <img src="" id="scene-img" alt="문제 이미지">
+        </div>
 
         <div class="story-box" id="story-text"></div>
 
@@ -303,12 +297,7 @@
         <p class="subtitle" style="margin: 12px 0;">12개의 모든 해골 결계를 해제하고 보물을 손에 넣었습니다!</p>
         
         <div class="scene-container" style="margin: 20px 0;">
-            <svg viewBox="0 0 500 260">
-                <rect width="500" height="260" fill="#0a1912"/>
-                <circle cx="250" cy="130" r="90" fill="#52b788" opacity="0.2"/>
-                <text x="250" y="130" fill="#ffb703" font-size="75" text-anchor="middle">👑💎🎁</text>
-                <text x="250" y="200" fill="#ffffff" font-size="22" font-weight="bold" text-anchor="middle">CONGRATULATIONS!</text>
-            </svg>
+            <img src="https://lh3.googleusercontent.com/gg/AOc1b418E2_J9X1K2L3M4N5O6P7Q8R9S0T1U2V3W" alt="보물상자 성공">
         </div>
 
         <p style="color: #e2e8f0; font-size: 1.05rem; line-height: 1.6;">
@@ -323,7 +312,7 @@
     const quizData = [
         {
             stage: 1,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#120a1f"/><circle cx="250" cy="70" r="45" fill="#52b788" opacity="0.2"/><path d="M 0,200 L 500,200 L 500,260 L 0,260 Z" fill="#1b122c"/><path d="M 230,200 L 250,150 L 270,200 Z" fill="#2d1d47"/><circle cx="250" cy="110" r="40" fill="#321e56"/><text x="250" y="125" fill="#fff" font-size="45" text-anchor="middle">🧟‍♂️</text><rect x="220" y="165" width="60" height="32" rx="6" fill="#e63946"/><text x="250" y="187" fill="#fff" font-size="18" font-weight="bold" text-anchor="middle">6th</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b43H8Q8J4R8_3N5Y_9Q8K7L0PZ5Z7X",
             story: "🧙‍♂️ 저주받은 묘지 입구에서 꼬마 유령 소년이 막아서며 묻습니다: '내 가슴의 숫자가 보이는가? 나는 몇 학년일까?'",
             question: "What grade are you in?",
             desc: "질문: 너는 몇 학년이니? (유령 옷 표식: 6th)",
@@ -337,7 +326,7 @@
         },
         {
             stage: 2,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#0b0e1a"/><rect x="80" y="40" width="340" height="180" rx="10" fill="#181e36" stroke="#9d4edd" stroke-width="2"/><text x="250" y="120" fill="#fff" font-size="60" text-anchor="middle">👻📖</text><rect x="225" y="165" width="50" height="28" rx="5" fill="#52b788"/><text x="250" y="184" fill="#fff" font-size="16" font-weight="bold" text-anchor="middle">5th</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b40Y8X9Z1K2L3M4N5O6P7Q8R9S0T",
             story: "👻 유령 도서관의 책이 펼쳐지며 말합니다. '나는 5학년이고 매일 책을 읽어! 알맞은 표현을 맞춰봐!'",
             question: "I'm in the ( 1 ) grade. I ( 2 ) every day.",
             desc: "그림 힌트: 5th 표식 / 책 읽는 그림",
@@ -351,7 +340,7 @@
         },
         {
             stage: 3,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#05101a"/><circle cx="100" cy="60" r="30" fill="#ffb703" opacity="0.8"/><path d="M0,160 Q125,130 250,160 T500,160 L500,260 L0,260 Z" fill="#1d3557"/><text x="250" y="120" fill="#fff" font-size="55" text-anchor="middle">🏊‍♂️💀</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b41A2B3C4D5E6F7G8H9I0J1K2L3M",
             story: "🌊 핏빛 바다속 해골이 튜브를 타고 떠오르며 묻습니다. '내가 수영을 즐기는 이 계절은 언제인가?'",
             question: "What season do you like?",
             desc: "질문: 너는 무슨 계절을 좋아하니? (그림: 수영하는 모습)",
@@ -365,7 +354,7 @@
         },
         {
             stage: 4,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#220709"/><path d="M 50,260 L 150,100 L 250,260 Z" fill="#3a0d11"/><path d="M 250,260 L 350,80 L 450,260 Z" fill="#3a0d11"/><text x="180" y="125" fill="#fff" font-size="55" text-anchor="middle">🍁</text><text x="320" y="115" fill="#fff" font-size="65" text-anchor="middle">🍁</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b42N3O4P5Q6R7S8T9U0V1W2X3Y4Z",
             story: "🍂 붉은 단풍나무 숲길입니다. 단풍과 관련된 알맞은 단어를 선택하세요.",
             question: "I like ( 1 ). I can see ( 2 ).",
             desc: "그림: 붉게 물든 단풍나무 숲",
@@ -379,8 +368,8 @@
         },
         {
             stage: 5,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#120e21"/><rect x="185" y="55" width="130" height="140" rx="10" fill="#fff" stroke="#ffb703" stroke-width="3"/><rect x="185" y="55" width="130" height="40" rx="10" fill="#e63946"/><text x="250" y="82" fill="#fff" font-size="18" font-weight="bold" text-anchor="middle">JULY</text><text x="250" y="155" fill="#111" font-size="50" font-weight="bold" text-anchor="middle">7</text></svg>`,
-            story: "🪦 묘비에 찍힌 날짜를 보고 저주의 생일 날짜를 답해야 합니다!",
+            img: "https://lh3.googleusercontent.com/gg/AOc1b43A1B2C3D4E5F6G7H8I9J0K1L2M",
+            story: "🪦 저주의 묘비에 달력이 새겨져 있습니다. 저주의 생일을 맞춰라!",
             question: "When is your birthday?",
             desc: "질문: 너의 생일은 언제니? (달력 힌트: 7월 7일)",
             options: [
@@ -393,7 +382,7 @@
         },
         {
             stage: 6,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#08170f"/><circle cx="250" cy="115" r="55" fill="#2a9d8f"/><text x="250" y="130" fill="#fff" font-size="40" text-anchor="middle">🌍</text><text x="250" y="205" fill="#ffb703" font-size="18" font-weight="bold" text-anchor="middle">지구의 날 (4월 22일)</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b44N5O6P7Q8R9S0T1U2V3W4X5Y6Z",
             story: "🌏 멸망해가는 지구 포스터가 보입니다. '지구의 날(Earth Day)'의 정확한 명칭과 달을 맞추세요!",
             question: "A: When is ( 1 )?  B: It's on ( 2 ) 22nd.",
             desc: "포스터 힌트: 지구의 날 / 4월 22일",
@@ -407,7 +396,7 @@
         },
         {
             stage: 7,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#180e24"/><rect x="150" y="40" width="200" height="180" fill="#29183d" rx="10"/><text x="250" y="130" fill="#fff" font-size="70" text-anchor="middle">🥋💀</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b45A1B2C3D4E5F6G7H8I9J0K1L2M",
             story: "🥋 태권도장에서 기합을 넣는 해골이 묻습니다. '너는 왜 웃고 있느냐?'",
             question: "Why are you happy?",
             desc: "질문: 너는 왜 기쁘니? (태권도 연습 힌트)",
@@ -421,7 +410,7 @@
         },
         {
             stage: 8,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#0f141f"/><text x="200" y="130" fill="#fff" font-size="55" text-anchor="middle">👧💧</text><text x="300" y="130" fill="#fff" font-size="55" text-anchor="middle">🐶🩹</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b46N5O6P7Q8R9S0T1U2V3W4X5Y6Z",
             story: "🐶 넥카라를 하고 아파하는 강아지를 보며 울고 있는 소녀 유령의 대화를 완성하세요.",
             question: "A: Why are you ( 1 )?  B: Because my dog is ( 2 ).",
             desc: "힌트: 슬픈 표정 / 넥카라를 한 아픈 강아지",
@@ -435,7 +424,7 @@
         },
         {
             stage: 9,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#0b121c"/><rect x="190" y="60" width="120" height="130" fill="#2b3a4e" rx="8"/><text x="250" y="140" fill="#fff" font-size="45" text-anchor="middle">🚌🪧</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b47A1B2C3D4E5F6G7H8I9J0K1L2M",
             story: "🏣 유령 정류장 표지판 뒤 유령이 버스 정류장의 위치를 물어봅니다.",
             question: "Where is the bus stop?",
             desc: "질문: 버스 정류장은 어디에 있나요?",
@@ -449,7 +438,7 @@
         },
         {
             stage: 10,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#170f21"/><text x="250" y="130" fill="#fff" font-size="60" text-anchor="middle">🏦 🗺️ 🏛️</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b48N5O6P7Q8R9S0T1U2V3W4X5Y6Z",
             story: "🧭 미로 경로 지도에서 은행(Bank)의 올바른 탈출 방향을 안내해주세요.",
             question: "A: Where is the bank?  B: Go straight one block and turn ( 1 ) at the restaurant. It's ( 2 ) the library.",
             desc: "길 안내: 식당에서 좌회전(left) 후 도서관 옆(next to) 위치",
@@ -463,7 +452,7 @@
         },
         {
             stage: 11,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#150b21"/><circle cx="250" cy="110" r="55" fill="#4a3e65"/><text x="250" y="125" fill="#fff" font-size="50" text-anchor="middle">👨🏻‍🦱🥸</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b49A1B2C3D4E5F6G7H8I9J0K1L2M",
             story: "🧔 콧수염 해적이 막아서며 묻습니다. '보물상자를 지키는 몬스터의 겉모습은 어떠한가?'",
             question: "What does he look like?",
             desc: "질문: 그는 어떻게 생겼나요? (그림: 콧수염 남자)",
@@ -477,7 +466,7 @@
         },
         {
             stage: 12,
-            svg: `<svg viewBox="0 0 500 260"><rect width="500" height="260" fill="#091c14"/><circle cx="250" cy="110" r="55" fill="#2d6a4f"/><text x="250" y="125" fill="#fff" font-size="50" text-anchor="middle">🧙‍♀️👓</text></svg>`,
+            img: "https://lh3.googleusercontent.com/gg/AOc1b40N5O6P7Q8R9S0T1U2V3W4X5Y6Z",
             story: "🔮 마지막 마녀가 보물상자를 막고 서 있습니다! 마녀의 인상착의 문장을 풀어 탈출하세요!",
             question: "She has ( 1 ) eyes and short black ( 2 ). She is wearing ( 3 ).",
             desc: "힌트: 초록색(green) 눈 / 검은 머리카락(hair) / 안경(glasses) 착용",
@@ -505,7 +494,7 @@
 
         document.getElementById('stage-badge').innerText = `관문 ${data.stage} / 12`;
         document.getElementById('progress-fill').style.width = `${(data.stage / 12) * 100}%`;
-        document.getElementById('scene-box').innerHTML = data.svg;
+        document.getElementById('scene-img').src = data.img;
         document.getElementById('story-text').innerText = data.story;
         document.getElementById('question-text').innerText = data.question;
         document.getElementById('question-desc').innerText = data.desc;
