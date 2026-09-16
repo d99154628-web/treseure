@@ -94,7 +94,6 @@
             font-size: 0.85rem;
         }
 
-        /* 🖼️ 그림 표시 영역 크기 및 비율 대폭 확대 */
         .scene-container {
             width: 100%;
             min-height: 350px;
@@ -111,8 +110,7 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
-        /* 그림 잘림 방지 (contain 속성 적용) */
-        .scene-container img {
+        .scene-container img, .scene-container video {
             width: 100%;
             height: 100%;
             max-height: 480px;
@@ -257,7 +255,6 @@
             z-index: 10;
         }
 
-        /* 쏟아지는 보석 애니메이션 이펙트 */
         .gem-particle {
             position: fixed;
             top: -50px;
@@ -330,13 +327,17 @@
         <div class="feedback" id="feedback"></div>
     </div>
 
-    <!-- 성공 엔딩 화면 (아웃트로 무비) -->
+    <!-- 성공 엔딩 화면 (동영상 아웃트로 무비) -->
     <div id="ending-screen" class="screen-center hidden">
         <h1 class="title" style="color: var(--accent-green); font-size: 2.2rem; text-shadow: 0 0 20px rgba(82, 183, 136, 0.8);">🎉 무사히 탈출했습니다! 🎉</h1>
         <p class="subtitle" style="margin: 12px 0; font-size: 1.1rem; color: var(--accent-gold);">✨ 12개의 모든 해골 결제를 해제하고 보물상자가 열렸습니다! ✨</p>
         
         <div class="scene-container" style="margin: 20px 0; border-color: var(--accent-gold); box-shadow: 0 0 40px rgba(255, 183, 3, 0.6);">
-            <img src="stage12.jpeg" alt="보물상자 오픈 무비">
+            <!-- MP4 동영상 파일 플레이어 (GIF 사용 시 <img src="ending.gif">로 가능) -->
+            <video id="ending-video" autoplay loop muted playsinline>
+                <source src="ending.mp4" type="video/mp4">
+                <img src="stage12.jpeg" alt="보물상자">
+            </video>
         </div>
 
         <p style="color: #e2e8f0; font-size: 1.1rem; line-height: 1.6;">
@@ -679,6 +680,15 @@
         hintBox.style.display = hintBox.style.display === 'none' ? 'block' : 'none';
     });
 
+    function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
     function loadStage(index) {
         currentStage = index;
         const data = quizData[index];
@@ -696,7 +706,9 @@
         const optionsContainer = document.getElementById('options-container');
         optionsContainer.innerHTML = '';
 
-        data.options.forEach(opt => {
+        const shuffledOptions = shuffleArray(data.options);
+
+        shuffledOptions.forEach(opt => {
             const btn = document.createElement('button');
             btn.className = 'btn-option';
             btn.innerText = opt.text;
@@ -725,7 +737,6 @@
         }
     }
 
-    // 💎 보석 쏟아지는 아웃트로 파티클 애니메이션 함수
     function startGemShower() {
         const gems = ['💎', '👑', '🪙', '✨', '🏆', '🎁', '🔮', '💰'];
         for (let i = 0; i < 70; i++) {
@@ -746,6 +757,13 @@
     function showEnding() {
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('ending-screen').classList.remove('hidden');
+        
+        // 비디오 자동 재생 처리
+        const video = document.getElementById('ending-video');
+        if (video) {
+            video.play().catch(e => console.log('Video autoplay error:', e));
+        }
+
         playVictoryFanfare();
         startGemShower();
     }
