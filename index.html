@@ -33,11 +33,12 @@
             background-image: 
                 radial-gradient(circle at 20% 20%, rgba(157, 78, 221, 0.15) 0%, transparent 40%),
                 radial-gradient(circle at 80% 80%, rgba(82, 183, 136, 0.1) 0%, transparent 40%);
+            overflow-x: hidden;
         }
 
         .game-container {
             width: 100%;
-            max-width: 820px;
+            max-width: 880px;
             background: var(--card-bg);
             border: 2px solid var(--accent-purple);
             border-radius: 20px;
@@ -93,9 +94,11 @@
             font-size: 0.85rem;
         }
 
+        /* 🖼️ 그림 표시 영역 크기 및 비율 대폭 확대 */
         .scene-container {
             width: 100%;
-            height: 320px;
+            min-height: 350px;
+            max-height: 480px;
             background: #000;
             border-radius: 12px;
             border: 2px solid rgba(157, 78, 221, 0.5);
@@ -108,10 +111,13 @@
             box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
+        /* 그림 잘림 방지 (contain 속성 적용) */
         .scene-container img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            max-height: 480px;
+            object-fit: contain;
+            background-color: #05020a;
         }
 
         .story-box {
@@ -237,12 +243,45 @@
             box-shadow: 0 0 30px rgba(157, 78, 221, 0.8);
         }
 
+        .sound-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--accent-purple);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            z-index: 10;
+        }
+
+        /* 쏟아지는 보석 애니메이션 이펙트 */
+        .gem-particle {
+            position: fixed;
+            top: -50px;
+            font-size: 2rem;
+            user-select: none;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(105vh) rotate(360deg);
+            }
+        }
+
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
 <div class="game-container">
+    <button class="sound-btn" id="sound-toggle">🔊 음소거</button>
+
     <!-- 인트로 화면 -->
     <div id="intro-screen" class="screen-center">
         <h1 class="title">☠️ 저주받은 보물섬의 비밀</h1>
@@ -291,24 +330,170 @@
         <div class="feedback" id="feedback"></div>
     </div>
 
-    <!-- 성공 엔딩 화면 -->
+    <!-- 성공 엔딩 화면 (아웃트로 무비) -->
     <div id="ending-screen" class="screen-center hidden">
-        <h1 class="title" style="color: var(--accent-green);">🎉 무사히 탈출했습니다!</h1>
-        <p class="subtitle" style="margin: 12px 0;">12개의 모든 해골 결계를 해제하고 보물을 손에 넣었습니다!</p>
+        <h1 class="title" style="color: var(--accent-green); font-size: 2.2rem; text-shadow: 0 0 20px rgba(82, 183, 136, 0.8);">🎉 무사히 탈출했습니다! 🎉</h1>
+        <p class="subtitle" style="margin: 12px 0; font-size: 1.1rem; color: var(--accent-gold);">✨ 12개의 모든 해골 결제를 해제하고 보물상자가 열렸습니다! ✨</p>
         
-        <div class="scene-container" style="margin: 20px 0;">
-            <img src="stage12.jpeg" alt="보물상자 오픈">
+        <div class="scene-container" style="margin: 20px 0; border-color: var(--accent-gold); box-shadow: 0 0 40px rgba(255, 183, 3, 0.6);">
+            <img src="stage12.jpeg" alt="보물상자 오픈 무비">
         </div>
 
-        <p style="color: #e2e8f0; font-size: 1.05rem; line-height: 1.6;">
-            훌륭합니다! 영어 실력으로 보물섬의 저주를 완벽히 풀어냈습니다!
+        <p style="color: #e2e8f0; font-size: 1.1rem; line-height: 1.6;">
+            🏆 <b>축하합니다!</b> 훌륭한 영어 실력으로 보물섬의 쏟아지는 보석을 손에 넣었습니다!
         </p>
 
-        <button class="btn-primary" onclick="location.reload()">다시 도전하기 🔄</button>
+        <button class="btn-primary" onclick="location.reload()" style="background: linear-gradient(135deg, #ffb703, #fb8500); color: #000;">다시 도전하기 🔄</button>
     </div>
 </div>
 
 <script>
+    // 오디오 합성 시스템 (Web Audio API)
+    let audioCtx = null;
+    let bgmOsc = null;
+    let bgmGain = null;
+    let isMuted = false;
+    let isGameEnding = false;
+
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            startBGM();
+        }
+    }
+
+    // 으스스한 배경음악 (BGM)
+    function startBGM() {
+        if (!audioCtx || bgmOsc) return;
+
+        bgmGain = audioCtx.createGain();
+        bgmGain.gain.value = isMuted ? 0 : 0.05;
+        bgmGain.connect(audioCtx.destination);
+
+        const notes = [110, 116.54, 130.81, 123.47];
+        let noteIndex = 0;
+
+        function playSpookyNote() {
+            if (isMuted || isGameEnding) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(notes[noteIndex], audioCtx.currentTime);
+
+            gain.gain.setValueAtTime(0, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.04, audioCtx.currentTime + 1.5);
+            gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 3.5);
+
+            osc.connect(gain);
+            gain.connect(bgmGain);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 3.6);
+
+            noteIndex = (noteIndex + 1) % notes.length;
+        }
+
+        setInterval(playSpookyNote, 3000);
+        playSpookyNote();
+    }
+
+    // 자물쇠 딸깍(Unlock) 효과음 (SFX)
+    function playLockSound() {
+        if (!audioCtx || isMuted) return;
+
+        const now = audioCtx.currentTime;
+        const osc1 = audioCtx.createOscillator();
+        const gain1 = audioCtx.createGain();
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(1200, now);
+        osc1.frequency.exponentialRampToValueAtTime(400, now + 0.08);
+
+        gain1.gain.setValueAtTime(0.3, now);
+        gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+
+        osc1.connect(gain1);
+        gain1.connect(audioCtx.destination);
+
+        osc1.start(now);
+        osc1.stop(now + 0.08);
+
+        setTimeout(() => {
+            const now2 = audioCtx.currentTime;
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(800, now2);
+            osc2.frequency.exponentialRampToValueAtTime(1600, now2 + 0.12);
+
+            gain2.gain.setValueAtTime(0.4, now2);
+            gain2.gain.exponentialRampToValueAtTime(0.01, now2 + 0.15);
+
+            osc2.connect(gain2);
+            gain2.connect(audioCtx.destination);
+
+            osc2.start(now2);
+            osc2.stop(now2 + 0.15);
+        }, 90);
+    }
+
+    // 오답 시 으스스한 경고음
+    function playWrongSound() {
+        if (!audioCtx || isMuted) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        osc.frequency.linearRampToValueAtTime(90, now + 0.25);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now);
+        osc.stop(now + 0.25);
+    }
+
+    // 🎉 엔딩 아웃트로 성공 팡파르 승리 음악
+    function playVictoryFanfare() {
+        if (!audioCtx || isMuted) return;
+        isGameEnding = true;
+
+        const notes = [261.63, 329.63, 392.00, 523.25, 392.00, 523.25];
+        const times = [0, 0.18, 0.36, 0.54, 0.75, 0.95];
+        const durations = [0.15, 0.15, 0.15, 0.2, 0.18, 0.6];
+
+        notes.forEach((freq, idx) => {
+            const startTime = audioCtx.currentTime + times[idx];
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, startTime);
+
+            gain.gain.setValueAtTime(0, startTime);
+            gain.gain.linearRampToValueAtTime(0.25, startTime + 0.03);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + durations[idx]);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(startTime);
+            osc.stop(startTime + durations[idx]);
+        });
+    }
+
+    // 음소거 토글
+    document.getElementById('sound-toggle').addEventListener('click', function() {
+        isMuted = !isMuted;
+        this.innerText = isMuted ? '🔇 음소거 됨' : '🔊 음소거';
+        if (bgmGain) {
+            bgmGain.gain.value = isMuted ? 0 : 0.05;
+        }
+    });
+
     const quizData = [
         {
             stage: 1,
@@ -483,6 +668,7 @@
     let currentStage = 0;
 
     document.getElementById('btn-start').addEventListener('click', function() {
+        initAudio();
         document.getElementById('intro-screen').classList.add('hidden');
         document.getElementById('game-screen').classList.remove('hidden');
         loadStage(0);
@@ -522,24 +708,46 @@
     function checkAnswer(isCorrect) {
         const feedback = document.getElementById('feedback');
         if (isCorrect) {
+            playLockSound();
             feedback.className = 'feedback correct';
-            feedback.innerText = '✨ 정답입니다! 결계가 하나 해제됩니다...';
+            feedback.innerText = '🔓 정답입니다! 자물쇠가 풀리며 다음 관문이 열립니다...';
             setTimeout(() => {
                 if (currentStage + 1 < quizData.length) {
                     loadStage(currentStage + 1);
                 } else {
                     showEnding();
                 }
-            }, 1000);
+            }, 1200);
         } else {
+            playWrongSound();
             feedback.className = 'feedback wrong';
             feedback.innerText = '☠️ 틀렸습니다! 다시 시도해 보세요.';
+        }
+    }
+
+    // 💎 보석 쏟아지는 아웃트로 파티클 애니메이션 함수
+    function startGemShower() {
+        const gems = ['💎', '👑', '🪙', '✨', '🏆', '🎁', '🔮', '💰'];
+        for (let i = 0; i < 70; i++) {
+            setTimeout(() => {
+                const gem = document.createElement('div');
+                gem.className = 'gem-particle';
+                gem.innerText = gems[Math.floor(Math.random() * gems.length)];
+                gem.style.left = Math.random() * 95 + 'vw';
+                gem.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                gem.style.fontSize = (Math.random() * 1.5 + 1.5) + 'rem';
+                document.body.appendChild(gem);
+
+                setTimeout(() => gem.remove(), 4000);
+            }, i * 80);
         }
     }
 
     function showEnding() {
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('ending-screen').classList.remove('hidden');
+        playVictoryFanfare();
+        startGemShower();
     }
 </script>
 
